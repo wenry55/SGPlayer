@@ -558,7 +558,7 @@
 		9CFA2331230BCD4400061AAC /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA2329230BCD4400061AAC /* libswscale.a */; };
 		9CFA2332230BCD4400061AAC /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA232A230BCD4400061AAC /* libavfilter.a */; };
 		9CFA2333230BCE3200061AAC /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA2314230BCCEA00061AAC /* libavcodec.a */; };
-		9CFA2334230BCE3200061AAC /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA2318230BCCEA00061AAC /* libavfilter.a */; };
+		9CFA2334230BCE3200061AAC /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA2318230BCCEA00061AAC /* libavfilter.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		9CFA2335230BCE3200061AAC /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA2313230BCCE900061AAC /* libavformat.a */; };
 		9CFA2336230BCE3200061AAC /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA2316230BCCEA00061AAC /* libavutil.a */; };
 		9CFA2337230BCE3200061AAC /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFA2315230BCCEA00061AAC /* libcrypto.a */; };
@@ -1983,10 +1983,11 @@
 			};
 			buildConfigurationList = 9CEFA6D01E7122BF00835CAB /* Build configuration list for PBXProject "SGPlayer" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 9CEFA6CC1E7122BF00835CAB;
 			productRefGroup = 9CEFA6D71E7122BF00835CAB /* Products */;
@@ -2483,10 +2484,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2535,9 +2539,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};

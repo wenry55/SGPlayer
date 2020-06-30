@@ -395,57 +395,61 @@
     }
     MTLViewport viewports[2] = {};
     NSArray<SGMetalProjection *> *projections = nil;
-    id<CAMetalDrawable> drawable = [(CAMetalLayer *)self->_metalView.layer nextDrawable];
-    MTLSize textureSize = MTLSizeMake(width, height, 0);
-    MTLSize layerSize = MTLSizeMake(drawable.texture.width, drawable.texture.height, 0);
-    switch (displayMode) {
-        case SGDisplayModePlane: {
-            self->_projection1.matrix = baseMatrix;
-            projections = @[self->_projection1];
-            viewports[0] = [SGMetalViewport viewportWithLayerSize:layerSize textureSize:textureSize mode:SGScaling2Viewport(self->_scalingMode)];
-        }
-            break;
-        case SGDisplayModeVR: {
-            GLKMatrix4 matrix = GLKMatrix4Identity;
-            Float64 aspect = (Float64)drawable.texture.width / drawable.texture.height;
-            if (![self->_matrixMaker matrixWithAspect:aspect matrix1:&matrix]) {
-                break;
+    if (@available(iOS 13.0, *)) {
+        id<CAMetalDrawable> drawable = [(CAMetalLayer *)self->_metalView.layer nextDrawable];
+        MTLSize textureSize = MTLSizeMake(width, height, 0);
+        MTLSize layerSize = MTLSizeMake(drawable.texture.width, drawable.texture.height, 0);
+        switch (displayMode) {
+            case SGDisplayModePlane: {
+                self->_projection1.matrix = baseMatrix;
+                projections = @[self->_projection1];
+                viewports[0] = [SGMetalViewport viewportWithLayerSize:layerSize textureSize:textureSize mode:SGScaling2Viewport(self->_scalingMode)];
             }
-            self->_projection1.matrix = GLKMatrix4Multiply(baseMatrix, matrix);
-            projections = @[self->_projection1];
-            viewports[0] = [SGMetalViewport viewportWithLayerSize:layerSize];
-        }
-            break;
-        case SGDisplayModeVRBox: {
-            GLKMatrix4 matrix1 = GLKMatrix4Identity;
-            GLKMatrix4 matrix2 = GLKMatrix4Identity;
-            Float64 aspect = (Float64)drawable.texture.width / drawable.texture.height / 2.0;
-            if (![self->_matrixMaker matrixWithAspect:aspect matrix1:&matrix1 matrix2:&matrix2]) {
                 break;
+            case SGDisplayModeVR: {
+                GLKMatrix4 matrix = GLKMatrix4Identity;
+                Float64 aspect = (Float64)drawable.texture.width / drawable.texture.height;
+                if (![self->_matrixMaker matrixWithAspect:aspect matrix1:&matrix]) {
+                    break;
+                }
+                self->_projection1.matrix = GLKMatrix4Multiply(baseMatrix, matrix);
+                projections = @[self->_projection1];
+                viewports[0] = [SGMetalViewport viewportWithLayerSize:layerSize];
             }
-            self->_projection1.matrix = GLKMatrix4Multiply(baseMatrix, matrix1);
-            self->_projection2.matrix = GLKMatrix4Multiply(baseMatrix, matrix2);
-            projections = @[self->_projection1, self->_projection2];
-            viewports[0] = [SGMetalViewport viewportWithLayerSizeForLeft:layerSize];
-            viewports[1] = [SGMetalViewport viewportWithLayerSizeForRight:layerSize];
+                break;
+            case SGDisplayModeVRBox: {
+                GLKMatrix4 matrix1 = GLKMatrix4Identity;
+                GLKMatrix4 matrix2 = GLKMatrix4Identity;
+                Float64 aspect = (Float64)drawable.texture.width / drawable.texture.height / 2.0;
+                if (![self->_matrixMaker matrixWithAspect:aspect matrix1:&matrix1 matrix2:&matrix2]) {
+                    break;
+                }
+                self->_projection1.matrix = GLKMatrix4Multiply(baseMatrix, matrix1);
+                self->_projection2.matrix = GLKMatrix4Multiply(baseMatrix, matrix2);
+                projections = @[self->_projection1, self->_projection2];
+                viewports[0] = [SGMetalViewport viewportWithLayerSizeForLeft:layerSize];
+                viewports[1] = [SGMetalViewport viewportWithLayerSizeForRight:layerSize];
+            }
+                break;
         }
-            break;
-    }
-    if (projections.count) {
-        id<MTLCommandBuffer> commandBuffer = [self.renderer drawModel:model
-                                                            viewports:viewports
-                                                             pipeline:pipeline
-                                                          projections:projections
-                                                        inputTextures:textures
-                                                        outputTexture:drawable.texture];
-        [commandBuffer presentDrawable:drawable];
-        [commandBuffer commit];
-        [self->_lock lock];
-        if (self->_flags.framesFetched == framesFetched) {
-            self->_flags.framesDisplayed += 1;
-            self->_flags.hasNewFrame = NO;
+        if (projections.count) {
+            id<MTLCommandBuffer> commandBuffer = [self.renderer drawModel:model
+                                                                viewports:viewports
+                                                                 pipeline:pipeline
+                                                              projections:projections
+                                                            inputTextures:textures
+                                                            outputTexture:drawable.texture];
+            [commandBuffer presentDrawable:drawable];
+            [commandBuffer commit];
+            [self->_lock lock];
+            if (self->_flags.framesFetched == framesFetched) {
+                self->_flags.framesDisplayed += 1;
+                self->_flags.hasNewFrame = NO;
+            }
+            [self->_lock unlock];
         }
-        [self->_lock unlock];
+    } else {
+        // Fallback on earlier versions
     }
 }
 
